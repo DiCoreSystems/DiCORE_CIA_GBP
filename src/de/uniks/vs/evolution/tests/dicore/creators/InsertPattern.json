@@ -1,0 +1,261 @@
+{"0": { 
+"id": "0", 
+"name": "InsertPattern", 
+"status": "null", 
+"type": "PATTERN", 
+"class": "class de.uniks.vs.evolution.dicore.cia.ChangeImpactPattern", 
+"items": {
+"1": { 
+"id": "0", 
+"name": "GTR1", 
+"status": "null", 
+"type": "RULE", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphModel", 
+"items": {
+"2": { 
+"id": "0", 
+"name": "b", 
+"status": "new", 
+"type": "a", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"3": { 
+"id": "0", 
+"name": "GTR3", 
+"status": "null", 
+"type": "RULE", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphModel", 
+"items": {
+"4": { 
+"id": "0", 
+"name": "and-split", 
+"status": "undefined", 
+"type": "g", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"5": { 
+"id": "1", 
+"name": "and-join", 
+"status": "undefined", 
+"type": "g", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"6": { 
+"id": "2", 
+"name": "b", 
+"status": "new", 
+"type": "a", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"7": { 
+"id": "3", 
+"source": "0", 
+"target": "2", 
+"status": "new", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+},
+"8": { 
+"id": "4", 
+"source": "2", 
+"target": "1", 
+"status": "new", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+}
+}
+},
+"9": { 
+"id": "0", 
+"name": "GTR2", 
+"status": "null", 
+"type": "RULE", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphModel", 
+"items": {
+"10": { 
+"id": "0", 
+"name": "a", 
+"status": "unchanged", 
+"type": "a", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"11": { 
+"id": "1", 
+"name": "c", 
+"status": "unchanged", 
+"type": "a", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"12": { 
+"id": "2", 
+"name": "b", 
+"status": "new", 
+"type": "a", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"13": { 
+"id": "3", 
+"source": "0", 
+"target": "2", 
+"status": "new", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+},
+"14": { 
+"id": "4", 
+"source": "2", 
+"target": "1", 
+"status": "new", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+},
+"15": { 
+"id": "0", 
+"name": "GTR5", 
+"status": "null", 
+"type": "RULE", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphModel", 
+"items": {
+"16": { 
+"id": "0", 
+"name": "a", 
+"status": "unchanged", 
+"type": "a", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"17": { 
+"id": "1", 
+"name": "c", 
+"status": "unchanged", 
+"type": "a", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"18": { 
+"id": "2", 
+"name": "b", 
+"status": "new", 
+"type": "a", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"19": { 
+"id": "3", 
+"source": "0", 
+"target": "2", 
+"status": "new", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+},
+"20": { 
+"id": "4", 
+"source": "2", 
+"target": "1", 
+"status": "new", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+},
+"21": { 
+"id": "5", 
+"source": "0", 
+"target": "1", 
+"status": "deleted", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+}
+}
+}
+}
+},
+"22": { 
+"id": "0", 
+"name": "GTR4", 
+"status": "null", 
+"type": "RULE", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphModel", 
+"items": {
+"23": { 
+"id": "0", 
+"name": "or-split", 
+"status": "undefined", 
+"type": "g", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"24": { 
+"id": "1", 
+"name": "or-join", 
+"status": "undefined", 
+"type": "g", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"25": { 
+"id": "2", 
+"name": "b", 
+"status": "new", 
+"type": "a", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"26": { 
+"id": "3", 
+"source": "0", 
+"target": "2", 
+"status": "new", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+},
+"27": { 
+"id": "4", 
+"source": "2", 
+"target": "1", 
+"status": "new", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+},
+"28": { 
+"id": "0", 
+"name": "GTR6", 
+"status": "null", 
+"type": "RULE", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphModel", 
+"items": {
+"29": { 
+"id": "0", 
+"name": "or-split", 
+"status": "undefined", 
+"type": "g", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"30": { 
+"id": "1", 
+"name": "or-join", 
+"status": "undefined", 
+"type": "g", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"31": { 
+"id": "2", 
+"name": "b", 
+"status": "new", 
+"type": "a", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphNode" 
+},
+"32": { 
+"id": "3", 
+"source": "0", 
+"target": "2", 
+"status": "new", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+},
+"33": { 
+"id": "4", 
+"source": "2", 
+"target": "1", 
+"status": "new", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+},
+"34": { 
+"id": "5", 
+"source": "0", 
+"target": "1", 
+"status": "deleted", 
+"class": "class de.uniks.vs.evolution.graphmodels.GraphEdge" 
+}
+}
+}
+}
+}
+}
+}
+}
+}
+}
+

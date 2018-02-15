@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="yes"?>
+ <definitions id="definitions" 
+ xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" 
+ xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://java.sun.com/products/jsp/" 
+  targetNamespace="webservice.mohamed"
+  xmlns:tns="webservice.mohamed"
+  xmlns:counter="http://ComputeInitialPrice.webservice"
+  xmlns:tns2="webservice.mohamed"
+  xmlns:counter2="http://ComputeShippingPrice.webservice"
+   xmlns:tns3="webservice.mohamed"
+  xmlns:counter3="http://ComputeRetouchPrice.webservice">
+  
+  <import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8080/axis2/services/ComputeInitialPrice?wsdl"
+			 namespace="http://ComputeInitialPrice.webservice" />
+			 
+<import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8080/axis2/services/ComputeShippingPrice?wsdl"
+			 namespace="http://ComputeShippingPrice.webservice" />
+
+ <import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8080/axis2/services/ComputeRetouchPrice?wsdl"
+			 namespace="http://ComputeRetouchPrice.webservice" />
+
+  <process id="sid-e9dce6ff-41c1-427f-99ef-1b49382156de" isClosed="false" processType="None" name="ExecutablepurchaseOrderProcess">
+    <startEvent id="sid-D2A2A038-C955-4D45-BDB2-256469AD1576" isInterrupting="true" parallelMultiple="false">
+    </startEvent>
+    <scriptTask completionQuantity="1" id="sid-EAB04715-11B9-4C9B-8B7D-D9FA5D3D7CF6" isForCompensation="false" name="Receive Order" startQuantity="1" scriptFormat="groovy" >
+      <script>
+            String u="5";
+			up=u;
+			String q="2";
+			quant=q;
+			String cust="premium";
+			c=cust;
+			String mD="a";
+			meanD=mD;
+			String ini="5";
+			ip=ini;
+           </script>
+    </scriptTask>
+    <task completionQuantity="1" id="sid-C1FCF088-21BB-4724-A804-0D5BF9086770" isForCompensation="false" name="Check availability" startQuantity="1">
+      
+    </task>
+    <parallelGateway gatewayDirection="Diverging" id="sid-1620B8BA-5429-407E-9C4E-966D832C4DBC">
+      
+    </parallelGateway>
+    <serviceTask completionQuantity="1" id="sid-96E645D7-81B9-455D-8AF7-37F23801D6C9" isForCompensation="false" name="compute initial price" startQuantity="1" implementation="##WebService" operationRef="ComputeInitialPriceOperation">
+      <property id="propertyid1" name="DiscountRate"/>
+	  <dataInputAssociation>
+				<sourceRef>up</sourceRef>
+				<targetRef>unitPrice1</targetRef>
+			  </dataInputAssociation>
+			  <dataInputAssociation>
+				<sourceRef>quant</sourceRef>
+				<targetRef>quantity</targetRef>
+			  </dataInputAssociation>
+ 
+			<dataOutputAssociation>
+			 <sourceRef>initialPrice</sourceRef>
+             <targetRef>OutputVariable1</targetRef>
+            </dataOutputAssociation>
+     
+    </serviceTask>
+    <serviceTask completionQuantity="1" id="sid-D2116E27-F5C7-4217-AC14-F4CC3D8301CD" isForCompensation="false" name="compute retouch price" startQuantity="1" implementation="##WebService" operationRef="ComputeRetouchPriceOperation">
+      
+      <property id="propertyid2" name="RetouchPrice"/>
+	   <dataInputAssociation>
+        <sourceRef>ip</sourceRef>
+        <targetRef>initialPrice</targetRef>
+        </dataInputAssociation>
+ 
+			<dataOutputAssociation>
+			 <sourceRef>net</sourceRef>
+             <targetRef>n</targetRef>
+                        </dataOutputAssociation>
+						
+    </serviceTask>
+    
+    <parallelGateway gatewayDirection="Converging" id="sid-B69B4294-7BF0-416A-BE38-2CE845D49EEE">
+      
+    </parallelGateway>
+    <serviceTask completionQuantity="1" id="sid-D2CF291B-091B-4F20-B83B-6943B5D785B9" isForCompensation="false" name="compute shipping price" startQuantity="1" implementation="##WebService" operationRef="ComputeShippingPriceOperation">
+     <property id="propertyid3" name="ShippingPrice"/>
+       <dataInputAssociation>
+        <sourceRef>c</sourceRef>
+        <targetRef>customer</targetRef>
+</dataInputAssociation>
+ <dataInputAssociation>
+        <sourceRef>quant</sourceRef>
+        <targetRef>quantity</targetRef>
+</dataInputAssociation>
+ <dataInputAssociation>
+        <sourceRef>meanD</sourceRef>
+        <targetRef>meansOfDelivery</targetRef>
+</dataInputAssociation>
+
+			<dataOutputAssociation>
+			 <sourceRef>shippingPrice</sourceRef>
+        <targetRef>sp</targetRef>
+                        </dataOutputAssociation>
+						
+    </serviceTask>
+    <task completionQuantity="1" id="sid-F59A4677-6D31-461B-8438-2710293E88E7" isForCompensation="false" name="choose shipper" startQuantity="1">
+      
+    </task>
+    <task completionQuantity="1" id="sid-35EE6318-03EF-4108-ABF0-43BA725FB5F3" isForCompensation="false" name="compute total price" startQuantity="1">
+      
+    </task>
+    <task completionQuantity="1" id="sid-CB6F349A-1F84-46DC-929C-122512D7CF00" isForCompensation="false" name="send order and invoice" startQuantity="1">
+      
+    </task>
+    <scriptTask completionQuantity="1" id="sid-ED56C6E1-43D8-459C-894A-EC4E8C059FFE" isForCompensation="false" name="Receive delivery notification" startQuantity="1" scriptFormat="groovy">
+     <script>
+           System.out.println("Initial price"+OutputVariable1);
+		   System.out.println("Shipping price"+sp);
+		   System.out.println("Retouch price"+n);
+           </script>
+    </scriptTask>
+	  
+    <endEvent id="sid-EDE5B798-0C69-404B-B398-F3AA2435B606">
+      
+    </endEvent>
+	
+    <sequenceFlow id="sid-D00A470D-A0E4-4B4F-9D1D-806D79DE8135" sourceRef="sid-D2A2A038-C955-4D45-BDB2-256469AD1576" targetRef="sid-EAB04715-11B9-4C9B-8B7D-D9FA5D3D7CF6"/>
+    <sequenceFlow id="sid-3F8228A6-F3CD-4E02-98E3-F70338A3CA3B" sourceRef="sid-EAB04715-11B9-4C9B-8B7D-D9FA5D3D7CF6" targetRef="sid-C1FCF088-21BB-4724-A804-0D5BF9086770"/>
+    <sequenceFlow id="sid-3E82D3DE-5F1C-4023-87BF-731524F59DAE" sourceRef="sid-C1FCF088-21BB-4724-A804-0D5BF9086770" targetRef="sid-1620B8BA-5429-407E-9C4E-966D832C4DBC"/>
+    <sequenceFlow id="sid-14E22107-14BE-418D-9932-643E4885694F" sourceRef="sid-1620B8BA-5429-407E-9C4E-966D832C4DBC" targetRef="sid-96E645D7-81B9-455D-8AF7-37F23801D6C9"/>
+    <sequenceFlow id="sid-0152FF04-5409-49E4-A0B7-BDD8AD67E1C3" sourceRef="sid-1620B8BA-5429-407E-9C4E-966D832C4DBC" targetRef="sid-F59A4677-6D31-461B-8438-2710293E88E7"/>
+    <sequenceFlow id="sid-12449A95-5341-4E86-894B-F62D4253E35D" sourceRef="sid-96E645D7-81B9-455D-8AF7-37F23801D6C9" targetRef="sid-D2116E27-F5C7-4217-AC14-F4CC3D8301CD"/>
+    <sequenceFlow id="sid-E2A73C59-012D-4EA6-8D3F-9257D4D0A5EE" sourceRef="sid-F59A4677-6D31-461B-8438-2710293E88E7" targetRef="sid-D2CF291B-091B-4F20-B83B-6943B5D785B9"/>
+    <sequenceFlow id="sid-6CFDBE17-BBCD-43D0-98F8-BDE7E4283DB0" sourceRef="sid-D2116E27-F5C7-4217-AC14-F4CC3D8301CD" targetRef="sid-B69B4294-7BF0-416A-BE38-2CE845D49EEE"/>
+    <sequenceFlow id="sid-23C7EF9F-89B1-48DC-8930-30DE324A9362" sourceRef="sid-D2CF291B-091B-4F20-B83B-6943B5D785B9" targetRef="sid-B69B4294-7BF0-416A-BE38-2CE845D49EEE"/>
+    <sequenceFlow id="sid-9B734144-C7ED-4329-851F-61C58314CE0B" sourceRef="sid-B69B4294-7BF0-416A-BE38-2CE845D49EEE" targetRef="sid-35EE6318-03EF-4108-ABF0-43BA725FB5F3"/>
+    <sequenceFlow id="sid-916E5FE2-BCAE-41E2-9320-3AD939EA229C" sourceRef="sid-35EE6318-03EF-4108-ABF0-43BA725FB5F3" targetRef="sid-CB6F349A-1F84-46DC-929C-122512D7CF00"/>
+    <sequenceFlow id="sid-69397166-AD1A-49C6-A8E7-14A5BD7CB801" sourceRef="sid-CB6F349A-1F84-46DC-929C-122512D7CF00" targetRef="sid-ED56C6E1-43D8-459C-894A-EC4E8C059FFE"/>
+    <sequenceFlow id="sid-2C7E9BA9-0CE3-44B3-941D-60D420E58894" sourceRef="sid-ED56C6E1-43D8-459C-894A-EC4E8C059FFE" targetRef="sid-EDE5B798-0C69-404B-B398-F3AA2435B606"/>
+  </process>
+  <itemDefinition id="quant" structureRef="string" />  	
+    <itemDefinition id="up" structureRef="string" />
+    <itemDefinition id="unitPrice1" structureRef="string" />
+    <itemDefinition id="quantity" structureRef="string" />
+    <itemDefinition id="OutputVariable1" structureRef="string" />
+    <itemDefinition id="initialPrice" structureRef="string" />     
+	 <itemDefinition id="customer" structureRef="string" />
+	  <itemDefinition id="c" structureRef="string" />
+	   <!--itemDefinition id="q" structureRef="string" /!-->
+		<itemDefinition id="meanD" structureRef="string" />
+		<itemDefinition id="meansOfDelivery" structureRef="string" />
+		 <itemDefinition id="shippingPrice" structureRef="string" />
+		  <itemDefinition id="sp" structureRef="string" />
+		   <itemDefinition id="net" structureRef="string" />
+		    <itemDefinition id="n" structureRef="string" />
+			<itemDefinition id="ip" structureRef="string" />
+		  
+	<message id="ComputeInitialPriceMessage" itemRef="tns:ComputeInitialPriceItem" />
+   <message id="ComputeInitialPriceResponseMessage" itemRef="tns:ComputeInitialPriceResponseItem" />
+   <itemDefinition id="ComputeInitialPriceItem" structureRef="counter:ComputeInitialPrice" />
+   <itemDefinition id="ComputeInitialPriceResponseItem" structureRef="counter:ComputeInitialPriceResponse" />
+   
+   <message id="ComputeShippingPriceRequestMessage" itemRef="tns2:ComputeShippingPriceRequestItem" />
+  <message id="ComputeShippingPriceResponseMessage" itemRef="tns2:ComputeShippingPriceResponseItem" />
+  <itemDefinition id="ComputeShippingPriceResponseItem" structureRef="counter2:ComputeShippingPriceResponse" />
+  <itemDefinition id="ComputeShippingPriceRequestItem" structureRef="counter2:ComputeShippingPrice" />
+  
+  <message id="ComputeRetouchPriceRequestMessage" itemRef="tns3:ComputeRetouchPriceRequestItem" />
+  <message id="ComputeRetouchPriceResponseMessage" itemRef="tns3:ComputeRetouchPriceResponseItem" />
+  <itemDefinition id="ComputeRetouchPriceResponseItem" structureRef="counter3:ComputeRetouchPriceResponse" />
+  <itemDefinition id="ComputeRetouchPriceRequestItem" structureRef="counter3:ComputeRetouchPrice" />
+  
+  <interface name="ComputeInitialPriceInterface" implementationRef="counter:ComputeInitialPrice">
+	<operation id="ComputeInitialPriceOperation" name="ComputeInitialPriceOperation" implementationRef="counter:ComputeInitialPrice">
+      <inMessageRef>tns:ComputeInitialPriceMessage</inMessageRef>
+	  <outMessageRef>tns:ComputeInitialPriceResponseMessage</outMessageRef>
+    </operation>
+  </interface>  
+  
+  <interface name="ComputeShippingPrice Interface" implementationRef="counter2:ComputeShippingPrice">
+   <operation id="ComputeShippingPriceOperation" name="ComputeShippingPriceOperation" implementationRef="counter2:ComputeShippingPrice">
+      <inMessageRef>tns2:ComputeShippingPriceRequestMessage</inMessageRef>
+	  <outMessageRef>tns2:ComputeShippingPriceResponseMessage</outMessageRef>
+    </operation>
+	</interface>
+	
+  <interface name="ComputeRetouchPrice Interface" implementationRef="counter3:ComputeRetouchPrice">
+	<operation id="ComputeRetouchPriceOperation" name="ComputeRetouchPriceOperation" implementationRef="counter3:ComputeRetouchPrice">
+      <inMessageRef>tns3:ComputeRetouchPriceRequestMessage</inMessageRef>
+	  <outMessageRef>tns3:ComputeRetouchPriceResponseMessage</outMessageRef>
+    </operation>
+	</interface>
+  <bpmndi:BPMNDiagram documentation="background=#FFFFFF;count=1;horizontalcount=2;orientation=0;width=597.6;height=842.4;imageableWidth=587.6;imageableHeight=832.4;imageableX=5.0;imageableY=5.0" id="Yaoqiang_Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="sid-e9dce6ff-41c1-427f-99ef-1b49382156de">
+      <bpmndi:BPMNShape bpmnElement="sid-D2A2A038-C955-4D45-BDB2-256469AD1576" id="Yaoqiang-sid-D2A2A038-C955-4D45-BDB2-256469AD1576">
+        <omgdc:Bounds height="32.0" width="32.0" x="46.0" y="162.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-EAB04715-11B9-4C9B-8B7D-D9FA5D3D7CF6" id="Yaoqiang-sid-EAB04715-11B9-4C9B-8B7D-D9FA5D3D7CF6">
+        <omgdc:Bounds height="80.0" width="100.0" x="135.0" y="137.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-C1FCF088-21BB-4724-A804-0D5BF9086770" id="Yaoqiang-sid-C1FCF088-21BB-4724-A804-0D5BF9086770">
+        <omgdc:Bounds height="80.0" width="100.0" x="285.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-1620B8BA-5429-407E-9C4E-966D832C4DBC" id="Yaoqiang-sid-1620B8BA-5429-407E-9C4E-966D832C4DBC">
+        <omgdc:Bounds height="42.0" width="42.0" x="430.0" y="155.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="42.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-96E645D7-81B9-455D-8AF7-37F23801D6C9" id="Yaoqiang-sid-96E645D7-81B9-455D-8AF7-37F23801D6C9">
+        <omgdc:Bounds height="80.0" width="100.0" x="515.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-D2116E27-F5C7-4217-AC14-F4CC3D8301CD" id="Yaoqiang-sid-D2116E27-F5C7-4217-AC14-F4CC3D8301CD">
+        <omgdc:Bounds height="80.0" width="100.0" x="660.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-B69B4294-7BF0-416A-BE38-2CE845D49EEE" id="Yaoqiang-sid-B69B4294-7BF0-416A-BE38-2CE845D49EEE">
+        <omgdc:Bounds height="42.0" width="42.0" x="805.0" y="155.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="42.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-D2CF291B-091B-4F20-B83B-6943B5D785B9" id="Yaoqiang-sid-D2CF291B-091B-4F20-B83B-6943B5D785B9">
+        <omgdc:Bounds height="80.0" width="100.0" x="660.0" y="255.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-F59A4677-6D31-461B-8438-2710293E88E7" id="Yaoqiang-sid-F59A4677-6D31-461B-8438-2710293E88E7">
+        <omgdc:Bounds height="80.0" width="100.0" x="525.0" y="255.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-35EE6318-03EF-4108-ABF0-43BA725FB5F3" id="Yaoqiang-sid-35EE6318-03EF-4108-ABF0-43BA725FB5F3">
+        <omgdc:Bounds height="80.0" width="100.0" x="890.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-CB6F349A-1F84-46DC-929C-122512D7CF00" id="Yaoqiang-sid-CB6F349A-1F84-46DC-929C-122512D7CF00">
+        <omgdc:Bounds height="80.0" width="100.0" x="1035.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-ED56C6E1-43D8-459C-894A-EC4E8C059FFE" id="Yaoqiang-sid-ED56C6E1-43D8-459C-894A-EC4E8C059FFE">
+        <omgdc:Bounds height="80.0" width="100.0" x="1180.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="80.0" width="100.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-EDE5B798-0C69-404B-B398-F3AA2435B606" id="Yaoqiang-sid-EDE5B798-0C69-404B-B398-F3AA2435B606">
+        <omgdc:Bounds height="32.0" width="32.0" x="1325.0" y="161.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-D00A470D-A0E4-4B4F-9D1D-806D79DE8135" id="Yaoqiang-sid-D00A470D-A0E4-4B4F-9D1D-806D79DE8135" sourceElement="sid-D2A2A038-C955-4D45-BDB2-256469AD1576" targetElement="sid-EAB04715-11B9-4C9B-8B7D-D9FA5D3D7CF6">
+        <omgdi:waypoint x="77.9529663441819" y="178.0"/>
+        <omgdi:waypoint x="134.94623655913978" y="177.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-14E22107-14BE-418D-9932-643E4885694F" id="Yaoqiang-sid-14E22107-14BE-418D-9932-643E4885694F" sourceElement="sid-1620B8BA-5429-407E-9C4E-966D832C4DBC" targetElement="sid-96E645D7-81B9-455D-8AF7-37F23801D6C9">
+        <omgdi:waypoint x="471.4784946236558" y="176.0"/>
+        <omgdi:waypoint x="514.516129032258" y="174.99999999999997"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-23C7EF9F-89B1-48DC-8930-30DE324A9362" id="Yaoqiang-sid-23C7EF9F-89B1-48DC-8930-30DE324A9362" sourceElement="sid-D2CF291B-091B-4F20-B83B-6943B5D785B9" targetElement="sid-B69B4294-7BF0-416A-BE38-2CE845D49EEE">
+        <omgdi:waypoint x="759.6774193548387" y="295.0"/>
+        <omgdi:waypoint x="825.0" y="295.0"/>
+        <omgdi:waypoint x="825.0" y="196.18817204301078"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-0152FF04-5409-49E4-A0B7-BDD8AD67E1C3" id="Yaoqiang-sid-0152FF04-5409-49E4-A0B7-BDD8AD67E1C3" sourceElement="sid-1620B8BA-5429-407E-9C4E-966D832C4DBC" targetElement="sid-F59A4677-6D31-461B-8438-2710293E88E7">
+        <omgdi:waypoint x="450.0" y="196.45698924731187"/>
+        <omgdi:waypoint x="450.0" y="295.0"/>
+        <omgdi:waypoint x="525.2688172043011" y="295.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-E2A73C59-012D-4EA6-8D3F-9257D4D0A5EE" id="Yaoqiang-sid-E2A73C59-012D-4EA6-8D3F-9257D4D0A5EE" sourceElement="sid-F59A4677-6D31-461B-8438-2710293E88E7" targetElement="sid-D2CF291B-091B-4F20-B83B-6943B5D785B9">
+        <omgdi:waypoint x="625.2688172043011" y="295.0"/>
+        <omgdi:waypoint x="659.6774193548387" y="295.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-6CFDBE17-BBCD-43D0-98F8-BDE7E4283DB0" id="Yaoqiang-sid-6CFDBE17-BBCD-43D0-98F8-BDE7E4283DB0" sourceElement="sid-D2116E27-F5C7-4217-AC14-F4CC3D8301CD" targetElement="sid-B69B4294-7BF0-416A-BE38-2CE845D49EEE">
+        <omgdi:waypoint x="759.6774193548387" y="174.99999999999997"/>
+        <omgdi:waypoint x="804.8655913978494" y="176.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-2C7E9BA9-0CE3-44B3-941D-60D420E58894" id="Yaoqiang-sid-2C7E9BA9-0CE3-44B3-941D-60D420E58894" sourceElement="sid-ED56C6E1-43D8-459C-894A-EC4E8C059FFE" targetElement="sid-EDE5B798-0C69-404B-B398-F3AA2435B606">
+        <omgdi:waypoint x="1280.1075268817203" y="174.99999999999997"/>
+        <omgdi:waypoint x="1325.2691633780898" y="177.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-12449A95-5341-4E86-894B-F62D4253E35D" id="Yaoqiang-sid-12449A95-5341-4E86-894B-F62D4253E35D" sourceElement="sid-96E645D7-81B9-455D-8AF7-37F23801D6C9" targetElement="sid-D2116E27-F5C7-4217-AC14-F4CC3D8301CD">
+        <omgdi:waypoint x="614.516129032258" y="174.99999999999997"/>
+        <omgdi:waypoint x="659.6774193548387" y="174.99999999999997"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-69397166-AD1A-49C6-A8E7-14A5BD7CB801" id="Yaoqiang-sid-69397166-AD1A-49C6-A8E7-14A5BD7CB801" sourceElement="sid-CB6F349A-1F84-46DC-929C-122512D7CF00" targetElement="sid-ED56C6E1-43D8-459C-894A-EC4E8C059FFE">
+        <omgdi:waypoint x="1134.9462365591398" y="174.99999999999997"/>
+        <omgdi:waypoint x="1180.1075268817203" y="174.99999999999997"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-916E5FE2-BCAE-41E2-9320-3AD939EA229C" id="Yaoqiang-sid-916E5FE2-BCAE-41E2-9320-3AD939EA229C" sourceElement="sid-35EE6318-03EF-4108-ABF0-43BA725FB5F3" targetElement="sid-CB6F349A-1F84-46DC-929C-122512D7CF00">
+        <omgdi:waypoint x="989.7849462365591" y="174.99999999999997"/>
+        <omgdi:waypoint x="1034.9462365591398" y="174.99999999999997"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-3F8228A6-F3CD-4E02-98E3-F70338A3CA3B" id="Yaoqiang-sid-3F8228A6-F3CD-4E02-98E3-F70338A3CA3B" sourceElement="sid-EAB04715-11B9-4C9B-8B7D-D9FA5D3D7CF6" targetElement="sid-C1FCF088-21BB-4724-A804-0D5BF9086770">
+        <omgdi:waypoint x="234.94623655913978" y="177.0"/>
+        <omgdi:waypoint x="285.4838709677419" y="174.99999999999997"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-9B734144-C7ED-4329-851F-61C58314CE0B" id="Yaoqiang-sid-9B734144-C7ED-4329-851F-61C58314CE0B" sourceElement="sid-B69B4294-7BF0-416A-BE38-2CE845D49EEE" targetElement="sid-35EE6318-03EF-4108-ABF0-43BA725FB5F3">
+        <omgdi:waypoint x="846.7473118279569" y="176.0"/>
+        <omgdi:waypoint x="889.7849462365591" y="174.99999999999997"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-3E82D3DE-5F1C-4023-87BF-731524F59DAE" id="Yaoqiang-sid-3E82D3DE-5F1C-4023-87BF-731524F59DAE" sourceElement="sid-C1FCF088-21BB-4724-A804-0D5BF9086770" targetElement="sid-1620B8BA-5429-407E-9C4E-966D832C4DBC">
+        <omgdi:waypoint x="385.4838709677419" y="174.99999999999997"/>
+        <omgdi:waypoint x="429.5967741935484" y="176.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

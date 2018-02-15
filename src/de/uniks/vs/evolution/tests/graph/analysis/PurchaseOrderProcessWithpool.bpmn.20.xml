@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <definitions id="definitions" 
+ xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" 
+ xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://java.sun.com/products/jsp/" 
+  targetNamespace="webservice.mohamed"
+  xmlns:tns="webservice.mohamed"
+  xmlns:counter="http://ComputeInitialPrice.webservice"
+  xmlns:tns2="webservice.mohamed"
+  xmlns:counter2="http://ComputeShippingPrice.webservice"
+   xmlns:tns3="webservice.mohamed"
+  xmlns:counter3="http://ComputeRetouchPrice.webservice">
+  
+  <import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8080/axis2/services/ComputeInitialPrice?wsdl"
+			 namespace="http://ComputeInitialPrice.webservice" />
+			 
+<import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8080/axis2/services/ComputeShippingPrice?wsdl"
+			 namespace="http://ComputeShippingPrice.webservice" />
+
+ <import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8080/axis2/services/ComputeRetouchPrice?wsdl"
+			 namespace="http://ComputeRetouchPrice.webservice" />
+
+			 
+			 <!--collaboration id="sid-0592fab1-afa2-4f12-b227-ba8f4bd8ed56">
+   
+    <participant id="sid-47BBB6C7-D8C9-4982-AACA-CB4B6B10E337" name="Purchase order process" processRef="sid-ab2e8d6b-9422-461f-af0f-9d6eef2f32c0">
+    </participant>
+   
+  </collaboration!-->
+  
+  <process id="sid-ab2e8d6b-9422-461f-af0f-9d6eef2f32c0" name="Purchase order process">
+    <!--laneSet id="sid-886f3caf-3418-4d97-b280-394419b7041f">
+      <lane id="sid-993B22FE-9A28-4F2B-85BD-3767C1D2F6F1">
+        <flowNodeRef>sid-A964B7FD-9202-4DF2-9238-9558EE47BD5C</flowNodeRef>
+        <flowNodeRef>sid-0CB9E7B7-38A5-431B-B9CE-75115FECC023</flowNodeRef>
+        <flowNodeRef>sid-8EDD7A74-7FDB-49CF-B79E-92DEA4D64B32</flowNodeRef>
+        <flowNodeRef>sid-6A660A99-46E2-4A49-B138-BF966BDB2AE7</flowNodeRef>
+        <flowNodeRef>sid-3E8A0CDD-50CC-4B12-B8F3-A514ECFAC809</flowNodeRef>
+        <flowNodeRef>sid-CAEBAEA4-2273-49F4-A952-82C9E009D1F6</flowNodeRef>
+        <flowNodeRef>sid-9545F5F5-3993-482A-8BCE-CA7B9B43808B</flowNodeRef>
+        <flowNodeRef>sid-4870E4B8-AD58-4641-8615-26C2960F5BE9</flowNodeRef>
+        <flowNodeRef>sid-001454A1-0D4C-4908-A089-E1DB698A5F07</flowNodeRef>
+        <flowNodeRef>sid-65C4E411-A37F-4898-9444-6BC4E275EBAF</flowNodeRef>
+        <flowNodeRef>sid-1BEB9981-0074-4B93-B991-9ABC787EF8DE</flowNodeRef>
+        <flowNodeRef>sid-B960188A-35E4-4BC5-9607-05A350294162</flowNodeRef>
+        <flowNodeRef>sid-B01F7909-EBC0-4FAA-B83D-D88C2B7058E2</flowNodeRef>
+      </lane>
+    </laneSet!-->
+    <startEvent id="sid-A964B7FD-9202-4DF2-9238-9558EE47BD5C" name="">
+      
+    </startEvent>
+    <scriptTask completionQuantity="1" id="sid-0CB9E7B7-38A5-431B-B9CE-75115FECC023" isForCompensation="false" name="Receive Order" startQuantity="1" scriptFormat="groovy" >
+      <script>
+            String u="5";
+			up=u;
+			String q="2";
+			quant=q;
+			String cust="premium";
+			c=cust;
+			String mD="a";
+			meanD=mD;
+			String ini="5";
+			ip=ini;
+           </script>
+    </scriptTask>
+   
+    <task id="sid-8EDD7A74-7FDB-49CF-B79E-92DEA4D64B32" name="check avalability">
+    </task>
+    <parallelGateway id="sid-6A660A99-46E2-4A49-B138-BF966BDB2AE7" name="" gatewayDirection="Diverging">
+    </parallelGateway>
+    <task id="sid-3E8A0CDD-50CC-4B12-B8F3-A514ECFAC809" name="choose shipper">
+      
+    </task>
+   
+        <serviceTask completionQuantity="1" id="sid-CAEBAEA4-2273-49F4-A952-82C9E009D1F6" isForCompensation="false" name="compute initial price" startQuantity="1" implementation="##WebService" operationRef="ComputeInitialPriceOperation">
+      <property id="propertyid1" name="DiscountRate"/>
+	  <dataInputAssociation>
+				<sourceRef>up</sourceRef>
+				<targetRef>unitPrice1</targetRef>
+			  </dataInputAssociation>
+			  <dataInputAssociation>
+				<sourceRef>quant</sourceRef>
+				<targetRef>quantity</targetRef>
+			  </dataInputAssociation>
+ 
+			<dataOutputAssociation>
+			 <sourceRef>initialPrice</sourceRef>
+             <targetRef>OutputVariable1</targetRef>
+            </dataOutputAssociation>
+     
+    </serviceTask>
+  
+     <serviceTask completionQuantity="1" id="sid-9545F5F5-3993-482A-8BCE-CA7B9B43808B" isForCompensation="false" name="compute retouch price" startQuantity="1" implementation="##WebService" operationRef="ComputeRetouchPriceOperation">
+      
+      <property id="propertyid2" name="RetouchPrice"/>
+	   <dataInputAssociation>
+        <sourceRef>ip</sourceRef>
+        <targetRef>initialPrice</targetRef>
+        </dataInputAssociation>
+ 
+			<dataOutputAssociation>
+			 <sourceRef>net</sourceRef>
+             <targetRef>n</targetRef>
+                        </dataOutputAssociation>
+						
+    </serviceTask>
+  
+      <serviceTask completionQuantity="1" id="sid-4870E4B8-AD58-4641-8615-26C2960F5BE9" isForCompensation="false" name="compute shipping price" startQuantity="1" implementation="##WebService" operationRef="ComputeShippingPriceOperation">
+     <property id="propertyid3" name="ShippingPrice"/>
+       <dataInputAssociation>
+        <sourceRef>c</sourceRef>
+        <targetRef>customer</targetRef>
+</dataInputAssociation>
+ <dataInputAssociation>
+        <sourceRef>quant</sourceRef>
+        <targetRef>quantity</targetRef>
+</dataInputAssociation>
+ <dataInputAssociation>
+        <sourceRef>meanD</sourceRef>
+        <targetRef>meansOfDelivery</targetRef>
+</dataInputAssociation>
+
+			<dataOutputAssociation>
+			 <sourceRef>shippingPrice</sourceRef>
+        <targetRef>sp</targetRef>
+                        </dataOutputAssociation>
+						
+    </serviceTask>
+    <parallelGateway id="sid-001454A1-0D4C-4908-A089-E1DB698A5F07" name="" gatewayDirection="Converging">
+      
+    </parallelGateway>
+    <task id="sid-65C4E411-A37F-4898-9444-6BC4E275EBAF" name="compute total price">
+     
+    </task>
+    <task id="sid-1BEB9981-0074-4B93-B991-9ABC787EF8DE" name="send order and invoice">
+      
+    </task>
+ 
+     <scriptTask completionQuantity="1" id="sid-B960188A-35E4-4BC5-9607-05A350294162" isForCompensation="false" name="Receive delivery notification" startQuantity="1" scriptFormat="groovy">
+     <script>
+           System.out.println("Initial price"+OutputVariable1);
+		   System.out.println("Shipping price"+sp);
+		   System.out.println("Retouch price"+n);
+           </script>
+    </scriptTask>
+    <endEvent id="sid-B01F7909-EBC0-4FAA-B83D-D88C2B7058E2" name="">
+      
+    </endEvent>
+    <sequenceFlow id="sid-B05F3B46-8516-4007-9FA3-71ABD9BDA007" name="" sourceRef="sid-A964B7FD-9202-4DF2-9238-9558EE47BD5C" targetRef="sid-0CB9E7B7-38A5-431B-B9CE-75115FECC023"/>
+    <sequenceFlow id="sid-7E3D29BD-1EFA-40E6-9857-5949CD8D376B" name="" sourceRef="sid-0CB9E7B7-38A5-431B-B9CE-75115FECC023" targetRef="sid-8EDD7A74-7FDB-49CF-B79E-92DEA4D64B32"/>
+    <sequenceFlow id="sid-D4401131-ABB4-489F-8836-2D15C3ED4AEF" name="" sourceRef="sid-8EDD7A74-7FDB-49CF-B79E-92DEA4D64B32" targetRef="sid-6A660A99-46E2-4A49-B138-BF966BDB2AE7"/>
+    <sequenceFlow id="sid-344118DA-352D-4C13-BFEE-7F29E64E6CA2" name="" sourceRef="sid-6A660A99-46E2-4A49-B138-BF966BDB2AE7" targetRef="sid-3E8A0CDD-50CC-4B12-B8F3-A514ECFAC809"/>
+    <sequenceFlow id="sid-445B4D0F-FB3A-4EC0-AD3F-4FB36042599E" name="" sourceRef="sid-6A660A99-46E2-4A49-B138-BF966BDB2AE7" targetRef="sid-CAEBAEA4-2273-49F4-A952-82C9E009D1F6"/>
+    <sequenceFlow id="sid-C65CD3FB-63C5-462F-A663-F26F7254FBA1" name="" sourceRef="sid-CAEBAEA4-2273-49F4-A952-82C9E009D1F6" targetRef="sid-9545F5F5-3993-482A-8BCE-CA7B9B43808B"/>
+    <sequenceFlow id="sid-E9C325D1-815D-4F4F-8BAF-1E4D6C30A665" name="" sourceRef="sid-3E8A0CDD-50CC-4B12-B8F3-A514ECFAC809" targetRef="sid-4870E4B8-AD58-4641-8615-26C2960F5BE9"/>
+    <sequenceFlow id="sid-11C8E5C6-D6A9-46DD-BB32-288E738E5FAE" name="" sourceRef="sid-9545F5F5-3993-482A-8BCE-CA7B9B43808B" targetRef="sid-001454A1-0D4C-4908-A089-E1DB698A5F07"/>
+    <sequenceFlow id="sid-E817C987-A343-46BF-B6C8-F7CF8FC5051D" name="" sourceRef="sid-4870E4B8-AD58-4641-8615-26C2960F5BE9" targetRef="sid-001454A1-0D4C-4908-A089-E1DB698A5F07"/>
+    <sequenceFlow id="sid-352DE917-4BD1-4C3F-93EB-855CD17EAD21" name="" sourceRef="sid-001454A1-0D4C-4908-A089-E1DB698A5F07" targetRef="sid-65C4E411-A37F-4898-9444-6BC4E275EBAF"/>
+    <sequenceFlow id="sid-8A072FB2-4A8E-4415-9A1E-53F8F65B1FF3" name="" sourceRef="sid-65C4E411-A37F-4898-9444-6BC4E275EBAF" targetRef="sid-1BEB9981-0074-4B93-B991-9ABC787EF8DE"/>
+    <sequenceFlow id="sid-41DE9BDE-5E59-4BB0-ADEB-155A654FFAD3" name="" sourceRef="sid-1BEB9981-0074-4B93-B991-9ABC787EF8DE" targetRef="sid-B960188A-35E4-4BC5-9607-05A350294162"/>
+    <sequenceFlow id="sid-3E8CA23F-D586-4DD9-A98B-F5B92F1E55E8" name="" sourceRef="sid-B960188A-35E4-4BC5-9607-05A350294162" targetRef="sid-B01F7909-EBC0-4FAA-B83D-D88C2B7058E2"/>
+  </process>
+  
+ 
+  
+  <itemDefinition id="quant" structureRef="string" />  	
+    <itemDefinition id="up" structureRef="string" />
+    <itemDefinition id="unitPrice1" structureRef="string" />
+    <itemDefinition id="quantity" structureRef="string" />
+    <itemDefinition id="OutputVariable1" structureRef="string" />
+    <itemDefinition id="initialPrice" structureRef="string" />     
+	 <itemDefinition id="customer" structureRef="string" />
+	  <itemDefinition id="c" structureRef="string" />
+	   <!--itemDefinition id="q" structureRef="string" /!-->
+		<itemDefinition id="meanD" structureRef="string" />
+		<itemDefinition id="meansOfDelivery" structureRef="string" />
+		 <itemDefinition id="shippingPrice" structureRef="string" />
+		  <itemDefinition id="sp" structureRef="string" />
+		   <itemDefinition id="net" structureRef="string" />
+		    <itemDefinition id="n" structureRef="string" />
+			<itemDefinition id="ip" structureRef="string" />
+		  
+	<message id="ComputeInitialPriceMessage" itemRef="tns:ComputeInitialPriceItem" />
+   <message id="ComputeInitialPriceResponseMessage" itemRef="tns:ComputeInitialPriceResponseItem" />
+   <itemDefinition id="ComputeInitialPriceItem" structureRef="counter:ComputeInitialPrice" />
+   <itemDefinition id="ComputeInitialPriceResponseItem" structureRef="counter:ComputeInitialPriceResponse" />
+   
+  
+   
+   <message id="ComputeShippingPriceRequestMessage" itemRef="tns2:ComputeShippingPriceRequestItem" />
+  <message id="ComputeShippingPriceResponseMessage" itemRef="tns2:ComputeShippingPriceResponseItem" />
+  <itemDefinition id="ComputeShippingPriceResponseItem" structureRef="counter2:ComputeShippingPriceResponse" />
+  <itemDefinition id="ComputeShippingPriceRequestItem" structureRef="counter2:ComputeShippingPrice" />
+  
+  <message id="ComputeRetouchPriceRequestMessage" itemRef="tns3:ComputeRetouchPriceRequestItem" />
+  <message id="ComputeRetouchPriceResponseMessage" itemRef="tns3:ComputeRetouchPriceResponseItem" />
+  <itemDefinition id="ComputeRetouchPriceResponseItem" structureRef="counter3:ComputeRetouchPriceResponse" />
+  <itemDefinition id="ComputeRetouchPriceRequestItem" structureRef="counter3:ComputeRetouchPrice" />
+  
+  <interface name="ComputeInitialPriceInterface" implementationRef="counter:ComputeInitialPrice">
+	<operation id="ComputeInitialPriceOperation" name="ComputeInitialPriceOperation" implementationRef="counter:ComputeInitialPrice">
+      <inMessageRef>tns:ComputeInitialPriceMessage</inMessageRef>
+	  <outMessageRef>tns:ComputeInitialPriceResponseMessage</outMessageRef>
+    </operation>
+   
+  </interface>  
+  
+  <interface name="ComputeShippingPrice Interface" implementationRef="counter2:ComputeShippingPrice">
+   <operation id="ComputeShippingPriceOperation" name="ComputeShippingPriceOperation" implementationRef="counter2:ComputeShippingPrice">
+      <inMessageRef>tns2:ComputeShippingPriceRequestMessage</inMessageRef>
+	  <outMessageRef>tns2:ComputeShippingPriceResponseMessage</outMessageRef>
+    </operation>
+	</interface>
+	
+  <interface name="ComputeRetouchPrice Interface" implementationRef="counter3:ComputeRetouchPrice">
+	<operation id="ComputeRetouchPriceOperation" name="ComputeRetouchPriceOperation" implementationRef="counter3:ComputeRetouchPrice">
+      <inMessageRef>tns3:ComputeRetouchPriceRequestMessage</inMessageRef>
+	  <outMessageRef>tns3:ComputeRetouchPriceResponseMessage</outMessageRef>
+    </operation>
+	</interface>
+  <signal id="alertSignal" name="alert" />
+  <bpmndi:BPMNDiagram id="sid-968923d2-5a06-4db4-9241-1e325d234424">
+      <bpmndi:BPMNPlane bpmnElement="sid-f97ca97e-5615-4f0f-8a10-6c7cf0dc3cb6" id="sid-7807a9f0-067f-4c22-bf3f-a2524c190f65">
+         <bpmndi:BPMNShape bpmnElement="sid-47BBB6C7-D8C9-4982-AACA-CB4B6B10E337" id="sid-47BBB6C7-D8C9-4982-AACA-CB4B6B10E337_gui" isHorizontal="true">
+            <omgdc:Bounds height="286.0" width="1393.0" x="75.0" y="420.0"/>
+         </bpmndi:BPMNShape>
+         <!--bpmndi:BPMNShape bpmnElement="sid-993B22FE-9A28-4F2B-85BD-3767C1D2F6F1" id="sid-993B22FE-9A28-4F2B-85BD-3767C1D2F6F1_gui" isHorizontal="true">
+            <omgdc:Bounds height="286.0" width="1363.0" x="105.0" y="420.0"/>
+         </bpmndi:BPMNShape!-->
+         <bpmndi:BPMNShape bpmnElement="sid-A964B7FD-9202-4DF2-9238-9558EE47BD5C" id="sid-A964B7FD-9202-4DF2-9238-9558EE47BD5C_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="155.5" y="523.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-0CB9E7B7-38A5-431B-B9CE-75115FECC023" id="sid-0CB9E7B7-38A5-431B-B9CE-75115FECC023_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="230.5" y="498.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-8EDD7A74-7FDB-49CF-B79E-92DEA4D64B32" id="sid-8EDD7A74-7FDB-49CF-B79E-92DEA4D64B32_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="375.5" y="498.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-6A660A99-46E2-4A49-B138-BF966BDB2AE7" id="sid-6A660A99-46E2-4A49-B138-BF966BDB2AE7_gui">
+            <omgdc:Bounds height="40.0" width="40.0" x="520.75" y="518.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-3E8A0CDD-50CC-4B12-B8F3-A514ECFAC809" id="sid-3E8A0CDD-50CC-4B12-B8F3-A514ECFAC809_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="605.75" y="551.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-CAEBAEA4-2273-49F4-A952-82C9E009D1F6" id="sid-CAEBAEA4-2273-49F4-A952-82C9E009D1F6_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="605.75" y="431.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-9545F5F5-3993-482A-8BCE-CA7B9B43808B" id="sid-9545F5F5-3993-482A-8BCE-CA7B9B43808B_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="750.75" y="431.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-4870E4B8-AD58-4641-8615-26C2960F5BE9" id="sid-4870E4B8-AD58-4641-8615-26C2960F5BE9_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="750.75" y="551.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-001454A1-0D4C-4908-A089-E1DB698A5F07" id="sid-001454A1-0D4C-4908-A089-E1DB698A5F07_gui">
+            <omgdc:Bounds height="40.0" width="40.0" x="896.125" y="518.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-65C4E411-A37F-4898-9444-6BC4E275EBAF" id="sid-65C4E411-A37F-4898-9444-6BC4E275EBAF_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="981.125" y="498.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-1BEB9981-0074-4B93-B991-9ABC787EF8DE" id="sid-1BEB9981-0074-4B93-B991-9ABC787EF8DE_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="1126.125" y="498.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-B960188A-35E4-4BC5-9607-05A350294162" id="sid-B960188A-35E4-4BC5-9607-05A350294162_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="1260.0" y="495.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-B01F7909-EBC0-4FAA-B83D-D88C2B7058E2" id="sid-B01F7909-EBC0-4FAA-B83D-D88C2B7058E2_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="1405.0" y="521.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="sid-344118DA-352D-4C13-BFEE-7F29E64E6CA2" id="sid-344118DA-352D-4C13-BFEE-7F29E64E6CA2_gui">
+            <omgdi:waypoint x="541.0" y="558.0"/>
+            <omgdi:waypoint x="541.25" y="591.0"/>
+            <omgdi:waypoint x="605.0" y="591.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-11C8E5C6-D6A9-46DD-BB32-288E738E5FAE" id="sid-11C8E5C6-D6A9-46DD-BB32-288E738E5FAE_gui">
+            <omgdi:waypoint x="850.0" y="471.0"/>
+            <omgdi:waypoint x="917.0167197452229" y="471.0"/>
+            <omgdi:waypoint x="917.0" y="518.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-C65CD3FB-63C5-462F-A663-F26F7254FBA1" id="sid-C65CD3FB-63C5-462F-A663-F26F7254FBA1_gui">
+            <omgdi:waypoint x="705.0" y="471.0"/>
+            <omgdi:waypoint x="750.0" y="471.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-41DE9BDE-5E59-4BB0-ADEB-155A654FFAD3" id="sid-41DE9BDE-5E59-4BB0-ADEB-155A654FFAD3_gui">
+            <omgdi:waypoint x="1226.0" y="537.0"/>
+            <omgdi:waypoint x="1260.0" y="536.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-7E3D29BD-1EFA-40E6-9857-5949CD8D376B" id="sid-7E3D29BD-1EFA-40E6-9857-5949CD8D376B_gui">
+            <omgdi:waypoint x="330.0" y="538.0"/>
+            <omgdi:waypoint x="375.0" y="538.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-352DE917-4BD1-4C3F-93EB-855CD17EAD21" id="sid-352DE917-4BD1-4C3F-93EB-855CD17EAD21_gui">
+            <omgdi:waypoint x="936.0" y="538.0"/>
+            <omgdi:waypoint x="981.0" y="538.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-D4401131-ABB4-489F-8836-2D15C3ED4AEF" id="sid-D4401131-ABB4-489F-8836-2D15C3ED4AEF_gui">
+            <omgdi:waypoint x="475.0" y="538.0"/>
+            <omgdi:waypoint x="520.0" y="538.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-445B4D0F-FB3A-4EC0-AD3F-4FB36042599E" id="sid-445B4D0F-FB3A-4EC0-AD3F-4FB36042599E_gui">
+            <omgdi:waypoint x="541.0" y="518.0"/>
+            <omgdi:waypoint x="541.25" y="471.0"/>
+            <omgdi:waypoint x="605.0" y="471.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-3E8CA23F-D586-4DD9-A98B-F5B92F1E55E8" id="sid-3E8CA23F-D586-4DD9-A98B-F5B92F1E55E8_gui">
+            <omgdi:waypoint x="1360.0" y="535.0"/>
+            <omgdi:waypoint x="1405.0" y="535.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-8A072FB2-4A8E-4415-9A1E-53F8F65B1FF3" id="sid-8A072FB2-4A8E-4415-9A1E-53F8F65B1FF3_gui">
+            <omgdi:waypoint x="1081.0" y="538.0"/>
+            <omgdi:waypoint x="1126.0" y="538.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-B05F3B46-8516-4007-9FA3-71ABD9BDA007" id="sid-B05F3B46-8516-4007-9FA3-71ABD9BDA007_gui">
+            <omgdi:waypoint x="185.0" y="538.0"/>
+            <omgdi:waypoint x="230.0" y="538.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-E9C325D1-815D-4F4F-8BAF-1E4D6C30A665" id="sid-E9C325D1-815D-4F4F-8BAF-1E4D6C30A665_gui">
+            <omgdi:waypoint x="705.0" y="591.0"/>
+            <omgdi:waypoint x="750.0" y="591.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-E817C987-A343-46BF-B6C8-F7CF8FC5051D" id="sid-E817C987-A343-46BF-B6C8-F7CF8FC5051D_gui">
+            <omgdi:waypoint x="850.0" y="591.0"/>
+            <omgdi:waypoint x="916.125" y="591.0"/>
+            <omgdi:waypoint x="916.0" y="558.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

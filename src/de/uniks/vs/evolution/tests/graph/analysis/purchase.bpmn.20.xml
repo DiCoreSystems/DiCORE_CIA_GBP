@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://java.sun.com/products/jsp/" 
+  targetNamespace="webservice.mohamed"
+  xmlns:tns="webservice.mohamed"
+  xmlns:counter="http://Purchase.webservice"
+   xmlns:tns1="webservice.mohamed"
+  xmlns:counter1="http://ComputeInitialPrice.webservice"
+  xmlns:tns2="webservice.mohamed"
+  xmlns:counter2="http://ComputeShippingPrice.webservice"
+  xmlns:tns3="webservice.mohamed"
+  xmlns:counter3="http://ComputeRetouchPrice.webservice"
+  xmlns:tns4="webservice.mohamed"
+  xmlns:counter4="http://ChooseSupp.webservice">
+ 
+ 
+
+<import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8081/axis2/services/Purchase?wsdl"
+			 namespace="http://Purchase.webservice" />
+			 
+			 
+			 
+<import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8081/axis2/services/ComputeInitialPrice?wsdl"
+			 namespace="http://ComputeInitialPrice.webservice" />
+			 
+<import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8081/axis2/services/ComputeShippingPrice?wsdl"
+			 namespace="http://ComputeShippingPrice.webservice" />
+            
+<import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8081/axis2/services/ComputeRetouchPrice?wsdl"
+			 namespace="http://ComputeRetouchPrice.webservice" />
+            
+<import importType="http://schemas.xmlsoap.org/wsdl/"
+             location="http://localhost:8081/axis2/services/ChooseSupp?wsdl"
+			 namespace="http://ChooseSupp.webservice" />
+			
+  
+  <process id="purchase_order_process" name="purchase_order_process" >
+  
+    <startEvent id="start"/>	 
+	
+	  <sequenceFlow id="flow1" sourceRef="start" targetRef="receiveOrder"/>
+   
+	        <scriptTask id="receiveOrder" scriptFormat="groovy" name="Execute script">
+      
+	   <script>
+	       String azerty="3"
+			 String qsdfg="1000"
+             p=azerty
+			 q=qsdfg
+			  up=qsdfg
+           c="premium"
+        </script>
+         
+      </scriptTask>
+
+	
+	<sequenceFlow id="flow2" sourceRef="receiveOrder" targetRef="CheckAv"/>
+    
+	   <serviceTask id="CheckAv"  name="Check availibility" implementation="##WebService"
+                 operationRef="tns:CheckAvOperation">
+	  
+          <dataInputAssociation>
+                      <sourceRef>q</sourceRef>
+                      <targetRef>quantity</targetRef>
+           </dataInputAssociation>
+		   <dataInputAssociation>
+                      <sourceRef>p</sourceRef>
+                      <targetRef>product</targetRef>
+           </dataInputAssociation>
+		   <dataOutputAssociation>
+                       <sourceRef>available</sourceRef>
+                       <targetRef>av</targetRef>
+           </dataOutputAssociation>
+                    
+		
+          </serviceTask>
+		  
+		  <sequenceFlow id="flow3" sourceRef="CheckAv" targetRef="XOR0"/>
+		  
+		  <exclusiveGateway gatewayDirection="Diverging" id="XOR0" name="XOR0"/>
+		  
+		   <sequenceFlow id="Available" name="Available" sourceRef="XOR0" targetRef="XOR0Join">
+              <conditionExpression xsi:type="tFormalExpression">${av == 'Yes'}</conditionExpression>
+			  </sequenceFlow>
+			  
+	  <sequenceFlow id="NotAvailable" name="NotAvailable" sourceRef="XOR0" targetRef="ChooseSupplier">
+	       <conditionExpression xsi:type="tFormalExpression">${av == 'No'}</conditionExpression>	  
+	 </sequenceFlow>
+		  
+	<serviceTask completionQuantity="1" id="ChooseSupplier"  name="Choose supplier" implementation="##WebService"
+                 operationRef="tns:ChooseSuppOperation">
+	 
+           <dataInputAssociation>
+                      <sourceRef>q</sourceRef>
+                      <targetRef>quantity</targetRef>
+           </dataInputAssociation>
+		   <dataInputAssociation>
+                      <sourceRef>p</sourceRef>
+                      <targetRef>product</targetRef>
+           </dataInputAssociation>
+		   <dataOutputAssociation>
+                       <sourceRef>supplier</sourceRef>
+                       <targetRef>supp</targetRef>
+           </dataOutputAssociation>
+		 
+         </serviceTask>
+		 <sequenceFlow id="flow3a" sourceRef="ChooseSupplier" targetRef="XOR1"/>
+		 
+		 <exclusiveGateway gatewayDirection="Diverging" id="XOR1" name="XOR1"/>
+		
+		
+		 <sequenceFlow id="TOsupp1" name="yes" sourceRef="XOR1" targetRef="supp1">
+		 	   <conditionExpression xsi:type="tFormalExpression">${supp == 'Supplier1'}</conditionExpression>
+		 </sequenceFlow>
+	 <sequenceFlow id="Tosupp2" name="no" sourceRef="XOR1" targetRef="supp2">
+       <conditionExpression xsi:type="tFormalExpression">${supp == 'Supplier2'}</conditionExpression>
+	 </sequenceFlow>
+	  
+	  
+	   <serviceTask id="supp1"  name="Contact supplier 1" implementation="##WebService"
+                 operationRef="tns:ContactSupplier1Operation">
+	     <dataInputAssociation>
+                      <sourceRef>q</sourceRef>
+                      <targetRef>quantity</targetRef>
+           </dataInputAssociation>
+		   <dataInputAssociation>
+                      <sourceRef>p</sourceRef>
+                      <targetRef>product</targetRef>
+           </dataInputAssociation>
+		   <dataOutputAssociation>
+                       <sourceRef>supplierPrice</sourceRef>
+                       <targetRef>suppPrice</targetRef>
+           </dataOutputAssociation>
+		
+        </serviceTask>
+		
+		
+		  <serviceTask completionQuantity="1" id="supp2" isForCompensation="false" name="Contact supplier 2" implementation="##WebService"
+                 operationRef="tns:ContactSupplier2Operation">
+	 <dataInputAssociation>
+                      <sourceRef>q</sourceRef>
+                      <targetRef>quantity</targetRef>
+           </dataInputAssociation>
+		   <dataInputAssociation>
+                      <sourceRef>p</sourceRef>
+                      <targetRef>product</targetRef>
+           </dataInputAssociation>
+		   <dataOutputAssociation>
+                       <sourceRef>supplierPrice</sourceRef>
+                       <targetRef>suppPrice</targetRef>
+           </dataOutputAssociation>
+	 </serviceTask>
+	  
+	  <sequenceFlow id="flow3b" sourceRef="supp1" targetRef="XOR1Join"/>
+	  
+	 <sequenceFlow id="flow3c" sourceRef="supp2" targetRef="XOR1Join"/>
+	 
+	    <exclusiveGateway gatewayDirection="Converging" id="XOR1Join" name="XOR1Join"/>
+		
+		 <sequenceFlow id="flow3d" sourceRef="XOR1Join" targetRef="ReceiveTask"/>
+	  
+	     <serviceTask  id="ReceiveTask"  name="Receive products" implementation="##WebService"
+                 operationRef="tns:ReceiveOperation">
+	  
+           <dataInputAssociation>
+                      <sourceRef>suppPrice</sourceRef>
+                      <targetRef>supplierPrice</targetRef>
+           </dataInputAssociation>
+		   <dataOutputAssociation>
+                       <sourceRef>unitPrice</sourceRef>
+                       <targetRef>up</targetRef>
+           </dataOutputAssociation>
+		 
+      </serviceTask>
+	
+	  
+	   <sequenceFlow id="flow3p" sourceRef="ReceiveTask" targetRef="XOR0Join"/>
+	 
+	
+		
+		
+	    <exclusiveGateway gatewayDirection="Converging" id="XOR0Join" name="XOR0Join"/>
+	
+     
+	  
+	 
+	
+	 <sequenceFlow id="flow4" sourceRef="XOR0Join" targetRef="AND"/>
+	   <parallelGateway gatewayDirection="Diverging" id="AND" name=""/>
+    
+	 
+	  <parallelGateway gatewayDirection="Converging" id="ANDJoin" name=""/>
+     
+   
+      <sequenceFlow id="flow4a" name="" sourceRef="AND" targetRef="ChooseShipper"/>
+
+	  <serviceTask  id="ChooseShipper"  name="Choose shipper" implementation="##WebService"
+                 operationRef="tns:ChooseShipperOperation">
+	 
+           <dataInputAssociation>
+                      <sourceRef>c</sourceRef>
+                      <targetRef>customer</targetRef>
+           </dataInputAssociation>
+		   <dataOutputAssociation>
+                       <sourceRef>meansOfDelivery</sourceRef>
+                       <targetRef>meanD</targetRef>
+           </dataOutputAssociation>
+	  </serviceTask>
+	  
+      <sequenceFlow id="flow4b" name="" sourceRef="ChooseShipper" targetRef="ComputeShipping"/>
+
+	  <serviceTask id="ComputeShipping" name="ComputeShipping" implementation="##WebService" operationRef="ComputeShippingPriceOperation">
+     
+	  <dataInputAssociation>
+        <sourceRef>c</sourceRef>
+        <targetRef>customer</targetRef>
+</dataInputAssociation>
+ <dataInputAssociation>
+        <sourceRef>q</sourceRef>
+        <targetRef>quantity</targetRef>
+</dataInputAssociation>
+ <dataInputAssociation>
+        <sourceRef>meanD</sourceRef>
+        <targetRef>meansOfDelivery</targetRef>
+</dataInputAssociation>
+
+			<dataOutputAssociation>
+			 <sourceRef>shippingPrice</sourceRef>
+        <targetRef>sp</targetRef>
+                        </dataOutputAssociation>
+						
+    </serviceTask>
+	   
+	   <sequenceFlow id="flow4e" name="" sourceRef="ComputeShipping" targetRef="ANDJoin"/>
+	   
+      <sequenceFlow id="flow4c" name="" sourceRef="AND" targetRef="ComputeInitial"/>
+	  
+	  <serviceTask id="ComputeInitial" name="Compute initial price" implementation="##WebService" operationRef="ComputeInitialPriceOperation">
+      <documentation>Computing initial price</documentation>
+	   
+	  <dataInputAssociation>
+        <sourceRef>up</sourceRef>
+        <targetRef>unitPrice</targetRef>
+</dataInputAssociation>
+ <dataInputAssociation>
+        <sourceRef>q</sourceRef>
+        <targetRef>quantity</targetRef>
+</dataInputAssociation>
+
+			<dataOutputAssociation>
+			 <sourceRef>initialPrice</sourceRef>
+        <targetRef>ip</targetRef>
+                        </dataOutputAssociation>
+						
+    </serviceTask>
+
+	   <sequenceFlow id="flow4d" name="" sourceRef="ComputeInitial" targetRef="ComputeRetouch"/>
+	   
+	   <serviceTask id="ComputeRetouch" name="Compute retouch price" implementation="##WebService" operationRef="ComputeRetouchPriceOperation">
+      <documentation>Computing retouch price</documentation>
+	   
+	  <dataInputAssociation>
+        <sourceRef>ip</sourceRef>
+        <targetRef>initialPrice</targetRef>
+</dataInputAssociation>
+ 
+			<dataOutputAssociation>
+			 <sourceRef>net</sourceRef>
+        <targetRef>n</targetRef>
+                        </dataOutputAssociation>
+						
+    </serviceTask>
+	
+	  <sequenceFlow id="flow4f" name="" sourceRef="ComputeRetouch" targetRef="ANDJoin"/>
+
+	       
+		   
+		   
+		   
+	  <sequenceFlow id="flow5" sourceRef="ANDJoin" targetRef="ComputeTotal"/>
+    
+	 <serviceTask  id="ComputeTotal"  name="Compute total price" implementation="##WebService" 
+	          operationRef="ComputeTotalPriceOperation">
+           <dataInputAssociation>
+                      <sourceRef>sp</sourceRef>
+                      <targetRef>shippingPrice</targetRef>
+           </dataInputAssociation>
+		   <dataInputAssociation>
+                      <sourceRef>n</sourceRef>
+                      <targetRef>net</targetRef>
+           </dataInputAssociation>
+		    <dataOutputAssociation>
+                       <sourceRef>totalPrice</sourceRef>
+                       <targetRef>tp</targetRef>
+           </dataOutputAssociation>
+		  
+      </serviceTask>
+	
+	 <sequenceFlow id="flow6" sourceRef="ComputeTotal" targetRef="SendOp"/>
+    
+	  <serviceTask id="SendOp"  name="Send order and invoice" implementation="##WebService" 
+	          operationRef="tns:SendOperation" >
+          <dataInputAssociation>
+         <sourceRef>tp</sourceRef>
+         <targetRef>totalPrice</targetRef>
+    </dataInputAssociation>
+	<dataInputAssociation>
+         <sourceRef>c</sourceRef>
+         <targetRef>customer</targetRef>
+    </dataInputAssociation>
+	<dataInputAssociation>
+         <sourceRef>meanD</sourceRef>
+         <targetRef>meansOfDelivery</targetRef>
+    </dataInputAssociation>
+	 <dataOutputAssociation>
+                       <sourceRef>ack</sourceRef>
+                       <targetRef>a</targetRef>
+           </dataOutputAssociation>
+	
+      </serviceTask>
+	  
+	   <sequenceFlow id="flow7" sourceRef="SendOp" targetRef="DeliveryOp"/>
+    
+	  <serviceTask  id="DeliveryOp" name="Receive delievry notification" implementation="##WebService"
+                 operationRef="tns:DeliveryOperation" >
+		<dataInputAssociation>
+         <sourceRef>a</sourceRef>
+         <targetRef>ack</targetRef>
+    </dataInputAssociation>
+	 <dataOutputAssociation>
+                       <sourceRef>end</sourceRef>
+                       <targetRef>fin</targetRef>
+           </dataOutputAssociation>
+				 </serviceTask>
+		   
+		   
+		   
+		   
+		   
+		   
+	 
+	  <sequenceFlow id="flow8" sourceRef="DeliveryOp" targetRef="script2"/>
+	<scriptTask id="script2" scriptFormat="groovy" name="resultat">
+       
+	   <script>
+	   System.out.println("p ? : " + p);
+     System.out.println("q? : " + q);
+	 System.out.println("c? : " + c);
+	 System.out.println("ip? : " + ip);
+	 System.out.println("sp? : " + sp);
+	 System.out.println("meanD? : " + meanD);
+	 System.out.println("n? : " + n);
+	// System.out.println("supp? : " + supp);
+           </script>
+         
+      </scriptTask>
+	
+
+	 <sequenceFlow id="sid-FC27ECF1-E23B-450F-B9E7-6FF42F608E62E" sourceRef="script2" targetRef="sid-32CFE67A-D31F-4E03-BEF7-F0FC7788B2D9"/>
+	 
+	 
+	 
+<endEvent id="sid-32CFE67A-D31F-4E03-BEF7-F0FC7788B2D9"/>
+      </process>
+	
+	  	    <itemDefinition id="a" structureRef="string" />
+  <itemDefinition id="ack" structureRef="string" />
+	  
+	  <itemDefinition id="end" structureRef="string" />
+  <itemDefinition id="fin" structureRef="string" />
+	    <itemDefinition id="suppPrice" structureRef="string" />
+	 
+	  <itemDefinition id="suppliarPrice" structureRef="string" />
+	  <itemDefinition id="sp2" structureRef="string" />
+	  <itemDefinition id="supplierPrice" structureRef="string" />
+	   <itemDefinition id="supp" structureRef="string" />
+	  <itemDefinition id="available" structureRef="string" />
+	  <itemDefinition id="net" structureRef="string" />
+	  <itemDefinition id="product" structureRef="string" />
+	<itemDefinition id="quantity" structureRef="string" />
+  <itemDefinition id="customer" structureRef="string" />
+  <itemDefinition id="unitPrice" structureRef="string" />
+  <itemDefinition id="initialPrice" structureRef="string" /> 	
+  <itemDefinition id="meansOfDelivery" structureRef="string" />
+  <itemDefinition id="shippingPrice" structureRef="string" />
+  <itemDefinition id="n" structureRef="string" />
+   <itemDefinition id="p" structureRef="string" />
+  <itemDefinition id="q" structureRef="string" />
+  <itemDefinition id="ip" structureRef="string" />
+  <itemDefinition id="tp" structureRef="string" />
+  <itemDefinition id="totalPrice" structureRef="string" />
+  <itemDefinition id="sp" structureRef="string" />
+  <itemDefinition id="meanD" structureRef="string" />
+  <itemDefinition id="c" structureRef="string" />
+  <itemDefinition id="up" structureRef="string" />
+  <itemDefinition id="av" structureRef="string" />
+	   <itemDefinition id="supplier" structureRef="string" />
+	 	  
+
+		  
+		    <interface name="ComputeInitial Interface" implementationRef="counter1:ComputeInitialPrice">
+   <operation id="ComputeInitialPriceOperation" name="ComputeInitialPriceOperation" implementationRef="counter1:ComputeInitialPrice">
+      <inMessageRef>tns1:ComputeInitialPriceRequestMessage</inMessageRef>
+	  <outMessageRef>tns1:ComputeInitialPriceResponseMessage</outMessageRef>
+    </operation>
+	</interface>
+	
+	 <interface name="ComputeShippingPrice Interface" implementationRef="counter2:ComputeShippingPrice">
+   <operation id="ComputeShippingPriceOperation" name="ComputeShippingPriceOperation" implementationRef="counter2:ComputeShippingPrice">
+      <inMessageRef>tns2:ComputeShippingPriceRequestMessage</inMessageRef>
+	  <outMessageRef>tns2:ComputeShippingPriceResponseMessage</outMessageRef>
+    </operation>
+	</interface>
+	
+	 <interface name="ComputeRetouchPrice Interface" implementationRef="counter3:ComputeRetouchPrice">
+	<operation id="ComputeRetouchPriceOperation" name="ComputeRetouchPriceOperation" implementationRef="counter3:ComputeRetouchPrice">
+      <inMessageRef>tns3:ComputeRetouchPriceRequestMessage</inMessageRef>
+	  <outMessageRef>tns3:ComputeRetouchPriceResponseMessage</outMessageRef>
+    </operation>
+	</interface>
+ 
+  <interface name="ChooseSupp Interface" implementationRef="counter4:ChooseSupp">
+	
+ <operation id="ChooseSuppOperation" name="ChooseSuppOperation" implementationRef="counter4:ChooseSupp">
+      <inMessageRef>tns4:ChooseSuppRequestMessage</inMessageRef>
+	  <outMessageRef>tns4:ChooseSuppResponseMessage</outMessageRef>
+    </operation>
+	</interface>
+	  
+	  <interface name="ComputePrice Interface" implementationRef="counter:Purchase">
+  
+   <operation id="ReceiveOperation" name="ReceiveOperation" implementationRef="counter:Receive">
+      <inMessageRef>tns:ReceiveRequestMessage</inMessageRef>
+	  <outMessageRef>tns:ReceiveResponseMessage</outMessageRef>
+    </operation>
+	
+  <operation id="DeliveryOperation" name="DeliveryOperation" implementationRef="counter:Delivery">
+      <inMessageRef>tns:DeliveryRequestMessage</inMessageRef>
+	  <outMessageRef>tns:DeliveryResponseMessage</outMessageRef>
+    </operation>
+  
+  
+   <operation id="SendOperation" name="SendOperation" implementationRef="counter:Send">
+      <inMessageRef>tns:SendRequestMessage</inMessageRef>
+	  <outMessageRef>tns:SendResponseMessage</outMessageRef>
+    </operation>
+  
+  <operation id="ComputeTotalPriceOperation" name="ComputeTotalPriceOperation" implementationRef="counter:ComputeTotalPrice">
+      <inMessageRef>tns:ComputeTotalPriceRequestMessage</inMessageRef>
+	  <outMessageRef>tns:ComputeTotalPriceResponseMessage</outMessageRef>
+    </operation>
+	
+  
+  
+  <operation id="ChooseShipperOperation" name="ChooseShipperOperation" implementationRef="counter:ChooseShipper">
+      <inMessageRef>tns:ChooseShipperRequestMessage</inMessageRef>
+	  <outMessageRef>tns:ChooseShipperResponseMessage</outMessageRef>
+    </operation>
+	
+ 
+  
+    <operation id="ContactSupplier2Operation" name="ContactSupplier2Operation" implementationRef="counter:ContactSupplier2">
+      <inMessageRef>tns:ContactSupplier2RequestMessage</inMessageRef>
+	  <outMessageRef>tns:ContactSupplier2ResponseMessage</outMessageRef>
+    </operation>
+   
+   <operation id="ContactSupplier1Operation" name="ContactSupplier1Operation" implementationRef="counter:ContactSupplier1">
+      <inMessageRef>tns:ContactSupplier1RequestMessage</inMessageRef>
+	  <outMessageRef>tns:ContactSupplier1ResponseMessage</outMessageRef>
+    </operation>
+
+
+	
+	<operation id="CheckAvOperation" name="CheckAvOperation" implementationRef="counter:CheckAv">
+      <inMessageRef>tns:CheckAvOperationRequestMessage</inMessageRef>
+	  <outMessageRef>tns:CheckAvOperationResponseMessage</outMessageRef>
+    </operation>
+	
+	
+	
+  </interface> 
+  
+  <message id="ReceiveRequestMessage" itemRef="tns:ReceiveRequestItem" />
+  <message id="ReceiveResponseMessage" itemRef="tns:ReceiveResponseItem" />
+  <itemDefinition id="ReceiveResponseItem" structureRef="counter:ReceiveResponse" />
+  <itemDefinition id="ReceiveRequestItem" structureRef="counter:Receive" /> 
+  
+  <message id="DeliveryRequestMessage" itemRef="tns:DeliveryRequestItem" />
+  <message id="DeliveryResponseMessage" itemRef="tns:DeliveryResponseItem" />
+  <itemDefinition id="DeliveryResponseItem" structureRef="counter:DeliveryResponse" />
+  <itemDefinition id="DeliveryRequestItem" structureRef="counter:Delivery" />  
+
+  
+  <message id="SendRequestMessage" itemRef="tns:SendRequestItem" />
+  <message id="SendResponseMessage" itemRef="tns:SendResponseItem" />
+  <itemDefinition id="SendResponseItem" structureRef="counter:SendResponse" />
+  <itemDefinition id="SendRequestItem" structureRef="counter:Send" />  
+
+  
+   <message id="ComputeTotalPriceRequestMessage" itemRef="tns:ComputeTotalPriceRequestItem" />
+  <message id="ComputeTotalPriceResponseMessage" itemRef="tns:ComputeTotalPriceResponseItem" />
+  <itemDefinition id="ComputeTotalPriceResponseItem" structureRef="counter:ComputeTotalPriceResponse" />
+  <itemDefinition id="ComputeTotalPriceRequestItem" structureRef="counter:ComputeTotalPrice" />  
+
+    <message id="ChooseShipperRequestMessage" itemRef="tns:ChooseShipperRequestItem" />
+  <message id="ChooseShipperResponseMessage" itemRef="tns:ChooseShipperResponseItem" />
+  <itemDefinition id="ChooseShipperResponseItem" structureRef="counter:ChooseShipperResponse" />
+  <itemDefinition id="ChooseShipperRequestItem" structureRef="counter:ChooseShipper" />  
+  
+  
+     <message id="ContactSupplier2RequestMessage" itemRef="tns:ContactSupplier2RequestItem" />
+  <message id="ContactSupplier2ResponseMessage" itemRef="tns:ContactSupplier2ResponseItem" />
+  <itemDefinition id="ContactSupplier2ResponseItem" structureRef="counter:ContactSupplier2Response" />
+  <itemDefinition id="ContactSupplier2RequestItem" structureRef="counter:ContactSupplier2" />
+  
+  
+   <message id="ContactSupplier1RequestMessage" itemRef="tns:ContactSupplier1RequestItem" />
+  <message id="ContactSupplier1ResponseMessage" itemRef="tns:ContactSupplier1ResponseItem" />
+  <itemDefinition id="ContactSupplier1ResponseItem" structureRef="counter:ContactSupplier1Response" />
+  <itemDefinition id="ContactSupplier1RequestItem" structureRef="counter:ContactSupplier1" />
+  
+  <message id="CheckAvOperationRequestMessage" itemRef="tns:CheckAvOperationRequestItem" />
+  <message id="CheckAvOperationResponseMessage" itemRef="tns:CheckAvOperationResponseItem" />
+  <itemDefinition id="CheckAvOperationResponseItem" structureRef="counter:CheckAvResponse" />
+  <itemDefinition id="CheckAvOperationRequestItem" structureRef="counter:CheckAv" />
+	
+  
+  <message id="ComputeRetouchPriceRequestMessage" itemRef="tns3:ComputeRetouchPriceRequestItem" />
+  <message id="ComputeRetouchPriceResponseMessage" itemRef="tns3:ComputeRetouchPriceResponseItem" />
+  <itemDefinition id="ComputeRetouchPriceResponseItem" structureRef="counter3:ComputeRetouchPriceResponse" />
+  <itemDefinition id="ComputeRetouchPriceRequestItem" structureRef="counter3:ComputeRetouchPrice" />
+	  
+  <message id="ComputeShippingPriceRequestMessage" itemRef="tns2:ComputeShippingPriceRequestItem" />
+  <message id="ComputeShippingPriceResponseMessage" itemRef="tns2:ComputeShippingPriceResponseItem" />
+  <itemDefinition id="ComputeShippingPriceResponseItem" structureRef="counter2:ComputeShippingPriceResponse" />
+  <itemDefinition id="ComputeShippingPriceRequestItem" structureRef="counter2:ComputeShippingPrice" />
+  
+   <message id="ComputeInitialPriceRequestMessage" itemRef="tns1:ComputeInitialPriceRequestItem" />
+  <message id="ComputeInitialPriceResponseMessage" itemRef="tns1:ComputeInitialPriceResponseItem" />
+  <itemDefinition id="ComputeInitialPriceResponseItem" structureRef="counter1:ComputeInitialPriceResponse" />
+  <itemDefinition id="ComputeInitialPriceRequestItem" structureRef="counter1:ComputeInitialPrice" />
+  
+   <message id="ChooseSuppRequestMessage" itemRef="tns4:ChooseSuppRequestItem" />
+  <message id="ChooseSuppResponseMessage" itemRef="tns4:ChooseSuppResponseItem" />
+  <itemDefinition id="ChooseSuppResponseItem" structureRef="counter4:ChooseSuppResponse" />
+  <itemDefinition id="ChooseSuppRequestItem" structureRef="counter4:ChooseSupp" />
+   
+
+  </definitions>
